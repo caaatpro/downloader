@@ -1,16 +1,25 @@
-const http = require('http'),
-      https = require('https'),
-      fs = require('fs-extra');
+const http = require('http');
+const https = require('https');
+const fs = require('fs-extra');
 
-const uploadDir = 'uploads\\',
-      fileList = 'files.txt';
+const uploadDir = 'uploads\\';
+const fileList = 'files.txt';
 
 var content = fs.readFileSync(fileList, 'utf8');
 
 var files = content.split('\n');
 
+const replaceDomain = (url) => {
+  url = url.replace('http://tstvershina.dev.nikolas.ru/', 'https://ikino.ru/');
+  
+  return url;
+}
+
 files.forEach( function (url) {
-  // console.log(url);
+  console.log(url);
+  
+  url = replaceDomain(url);
+
   //
   var array = url.split('/');
   var proto = array[0]
@@ -25,7 +34,10 @@ files.forEach( function (url) {
     var stream = fs.createWriteStream(dir + file);
     var request = http.get(url, function (response) {
       console.log(response.statusCode);
-    	response.pipe(stream);
+      response.pipe(stream);
     });
+    
+    return true;
+  }
   }
 })
